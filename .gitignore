@@ -6,3 +6,4 @@ node_modules/
 scripts/gh_device_push.py
 scripts/gh_push2.py
 scripts/askpass.sh
+scripts/gh_push3.py
