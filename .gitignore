@@ -4,3 +4,5 @@ node_modules/
 .idea/
 .vscode/
 scripts/gh_device_push.py
+scripts/gh_push2.py
+scripts/askpass.sh
