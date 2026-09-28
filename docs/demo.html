@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Health Preview — demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root { --accent:#ff5a6a; --ink:#f4eee6; --muted:#8d8478; --bg:#0c0b09; --line:rgba(244,238,230,.10); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",sans-serif; }
+  .wrap { max-width:1080px; margin:0 auto; padding:36px 28px 64px; }
+  .kicker { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); }
+  h1 { font-family:Fraunces,serif; font-size:48px; letter-spacing:-.03em; margin-top:8px; }
+  header { display:flex; justify-content:space-between; align-items:flex-end; padding-bottom:22px; border-bottom:1px solid var(--line); }
+  .asof { text-align:right; color:var(--muted); font-size:13px; }
+  .tabs-row { display:flex; justify-content:space-between; margin:20px 0 8px; }
+  .tab { border:0; background:none; color:var(--muted); padding:8px 14px 10px; font:500 14px inherit; }
+  .tab.on { color:var(--ink); border-bottom:2px solid var(--accent); }
+  .gear { border:1px solid var(--line); background:none; color:var(--muted); padding:7px 12px; font:13px inherit; }
+  .lede { margin:24px 0 32px; font-family:Fraunces,serif; font-size:22px; color:#d9d0c4; }
+  .lede em { font-style:italic; color:var(--ink); }
+  .hero { display:grid; grid-template-columns:240px 1fr; gap:40px; align-items:center; margin-bottom:40px; }
+  .rings { position:relative; width:220px; height:220px; margin:0 auto; }
+  .rings svg { width:100%; height:100%; transform:rotate(-90deg); }
+  .ring-center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring-center .num { font-family:Fraunces,serif; font-size:36px; font-weight:600; }
+  .ring-center .sub { font-size:11px; color:var(--muted); margin-top:4px; letter-spacing:.08em; }
+  .metric { display:grid; grid-template-columns:10px 1fr; gap:8px 12px; margin-bottom:16px; }
+  .dot { width:10px; height:10px; border-radius:50%; margin-top:10px; }
+  .label { font-size:12px; color:var(--muted); }
+  .now { font-family:Fraunces,serif; font-size:30px; font-weight:600; line-height:1; }
+  .unit { font-size:13px; color:var(--muted); margin-left:4px; }
+  .stat { grid-column:2; font-size:12px; color:var(--muted); }
+  .sleep { display:grid; grid-template-columns:1.1fr 1fr; gap:32px; padding:32px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .sleep-num { font-family:Fraunces,serif; font-size:72px; font-weight:600; letter-spacing:-.04em; line-height:.9; }
+  .sleep-num span { font-size:.42em; color:var(--muted); margin:0 4px; }
+  h2 { font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); font-weight:500; margin-bottom:8px; }
+  .stage-bar { display:flex; height:16px; overflow:hidden; margin:14px 0 8px; background:#1c1916; }
+  .stage-bar i { display:block; height:100%; }
+  .keys { display:flex; gap:14px; font-size:12px; color:var(--muted); flex-wrap:wrap; }
+  .keys i { display:inline-block; width:8px; height:8px; margin-right:5px; }
+  .chart { display:flex; align-items:flex-end; gap:6px; height:120px; }
+  .col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .stack { width:62%; height:96px; display:flex; flex-direction:column-reverse; }
+  .bar { width:62%; background:#5ee0c7; }
+  .bar.dim { opacity:.55; }
+  .xl { margin-top:6px; font-size:10px; color:var(--muted); }
+  .section { padding:28px 0; border-bottom:1px solid var(--line); }
+  .vitals { display:grid; grid-template-columns:repeat(4,1fr); }
+  .vital { padding-right:18px; border-right:1px solid var(--line); }
+  .vital:last-child { border:0; }
+  .vital .now { font-size:36px; margin:6px 0 4px; }
+  .vital .now small { font-size:14px; color:var(--muted); margin-left:4px; }
+  .caption { font-size:12px; color:var(--muted); }
+  .bodyrow { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div><div class="kicker">Health Preview</div><h1>Sep 28  Mon</h1></div>
+    <div class="asof">Live · 18:29<br/>Home Assistant</div>
+  </header>
+  <div class="tabs-row">
+    <div>
+      <button class="tab on">Alex</button>
+      <button class="tab">Sam</button>
+    </div>
+    <button class="gear">Settings</button>
+  </div>
+  <p class="lede">Last night <em>7h 18m</em>. Activity is on track versus the 7-day average.</p>
+  <div class="hero">
+    <div class="rings">
+      <svg viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,90,106,.14)" stroke-width="7"/>
+        <circle cx="60" cy="60" r="42" fill="none" stroke="rgba(198,240,76,.14)" stroke-width="7"/>
+        <circle cx="60" cy="60" r="32" fill="none" stroke="rgba(94,224,199,.14)" stroke-width="7"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#ff5a6a" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="82 18"/>
+        <circle cx="60" cy="60" r="42" fill="none" stroke="#c6f04c" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="90 10"/>
+        <circle cx="60" cy="60" r="32" fill="none" stroke="#5ee0c7" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="96 4"/>
+      </svg>
+      <div class="ring-center"><div class="num">89%</div><div class="sub">today</div></div>
+    </div>
+    <div>
+      <div class="metric"><div class="dot" style="background:#ff5a6a"></div><div><div class="label">Active energy</div><div class="now">328<span class="unit">kcal</span></div></div><div class="stat">goal 400 · 7d avg 361</div></div>
+      <div class="metric"><div class="dot" style="background:#c6f04c"></div><div><div class="label">Exercise</div><div class="now">27<span class="unit">min</span></div></div><div class="stat">goal 30 · 7d avg 24</div></div>
+      <div class="metric"><div class="dot" style="background:#5ee0c7"></div><div><div class="label">Steps</div><div class="now">7,680</div></div><div class="stat">goal 8000 · 7d avg 6,420 · 5.4 km</div></div>
+    </div>
+  </div>
+  <section class="sleep">
+    <div>
+      <h2>Last night</h2>
+      <div class="sleep-num">7<span>h</span>18<span>m</span></div>
+      <div class="stage-bar"><i style="width:58%;background:#4d6d8a"></i><i style="width:24%;background:#8fb4c9"></i><i style="width:14%;background:#c4a574"></i><i style="width:4%;background:#5a534c"></i></div>
+      <div class="keys"><span><i style="background:#4d6d8a"></i>Core 255m</span><span><i style="background:#8fb4c9"></i>REM 105m</span><span><i style="background:#c4a574"></i>Deep 62m</span><span><i style="background:#5a534c"></i>Awake 16m</span></div>
+      <p class="caption">7-night avg 7h 05m</p>
+    </div>
+    <div>
+      <h2>10 nights</h2>
+      <div class="chart" id="nights"></div>
+    </div>
+  </section>
+  <section class="section">
+    <h2>10-day activity</h2>
+    <div class="chart" id="steps"></div>
+    <p class="caption">peak 09-23 · 10,240 steps · water 1800 mL</p>
+  </section>
+  <section class="section">
+    <h2>Vitals</h2>
+    <div class="vitals">
+      <div class="vital"><div class="label">Heart rate</div><div class="now">68<small>bpm</small></div><div class="caption">today 54–112</div></div>
+      <div class="vital"><div class="label">Resting</div><div class="now">58<small>bpm</small></div><div class="caption">7d 59 · −2%</div></div>
+      <div class="vital"><div class="label">HRV</div><div class="now">52<small>ms</small></div><div class="caption">7d 48</div></div>
+      <div class="vital"><div class="label">SpO2</div><div class="now">97<small>%</small></div><div class="caption">7d 96.8</div></div>
+    </div>
+  </section>
+  <section class="section" style="border:0">
+    <h2>Body</h2>
+    <div class="bodyrow">
+      <div><div class="label">Weight</div><div class="now">71.2</div><div class="caption">2d ago</div></div>
+      <div><div class="label">BMI</div><div class="now">22.4</div><div class="caption">ok</div></div>
+      <div><div class="label">Body fat</div><div class="now">18%</div></div>
+      <div><div class="label">VO2 Max</div><div class="now">41.2</div></div>
+    </div>
+  </section>
+</div>
+<script>
+const nights=[6.8,7.1,6.4,7.5,7.2,6.9,8.0,7.3,6.6,7.3];
+const steps=[6200,7100,5400,8900,7600,10240,6800,7200,5900,7680];
+const nmax=Math.max(...nights), smax=Math.max(...steps);
+document.getElementById('nights').innerHTML = nights.map((v,i)=>`<div class="col"><div class="stack"><div style="height:${v/nmax*96}px;background:#4d6d8a"></div></div><div class="xl">${19+i}</div></div>`).join('');
+document.getElementById('steps').innerHTML = steps.map((v,i)=>`<div class="col"><div class="bar${i===9?'':' dim'}" style="height:${v/smax*96}px"></div><div class="xl">${19+i}</div></div>`).join('');
+</script>
+</body>
+</html>

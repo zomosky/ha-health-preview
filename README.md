@@ -1,20 +1,23 @@
 # Health Preview Card
 
-A Lovelace card for Home Assistant that shows an editorial, Apple Health–style dashboard: activity rings, sleep stages, 7-day stats, vitals, and body metrics.
+Editorial Apple Health–style dashboard for Home Assistant: activity rings, sleep stages, 7-day stats, vitals, body metrics.
+
+![Dashboard preview](docs/preview-dashboard.png)
 
 - One tab per person, each with its own accent color
-- In-card **Settings** UI to add people and map HA sensors — no YAML required after install
-- Reads only entities already in your Home Assistant (Apple Health via Health Auto Export, iOS Shortcuts, Garmin, etc.)
-- No cloud account, no telemetry, no bundled personal data
+- In-card **Settings** to add people and map HA sensors — YAML optional
+- Reads only entities already in Home Assistant
+- No cloud account, no telemetry, no personal samples in this repo
+
+![Settings preview](docs/preview-settings.png)
 
 ## Install (HACS)
 
 1. HACS → **⋯** → Custom repositories
-2. URL: your GitHub clone of this repo  
+2. URL: `https://github.com/zomosky/ha-health-preview`  
    Category: **Lovelace**
 3. Download **Health Preview Card**
-4. Restart Home Assistant if prompted
-5. Add a dashboard view (panel mode recommended):
+4. Add a **panel** view:
 
 ```yaml
 type: panel
@@ -25,19 +28,91 @@ cards:
   - type: custom:health-preview-card
 ```
 
-Or add the card to any view from **Add card** → Custom: Health Preview.
+Or **Add card** → Custom: Health Preview.
 
-## First use
+Then open the card → **Settings** → add a person → map sensors → **Done**.
 
-Open the card → **Settings**:
+---
 
-1. Add a person (name + color)
-2. Map sensors (`steps`, `sleep`, `hr`, …) from the dropdown
-3. Tap **Done**
+## Getting Apple Health into Home Assistant
 
-Config is stored in the browser and, when possible, on the current Home Assistant user (`frontend` user data key `health_people`). It is **not** written into `configuration.yaml`.
+The card does **not** talk to Apple. It only displays Home Assistant `sensor.*` entities. You must push HealthKit data into HA first.
 
-Optional YAML seed (overridden once Settings is saved):
+The official HA Companion App on iPhone exposes **motion coprocessor** stats only (steps, distance, floors, pace). It does **not** expose heart rate, sleep, HRV, SpO2, or calories.
+
+| You need | Native HA iOS app | iOS Shortcuts (free) | Health Auto Export (paid) |
+|----------|-------------------|----------------------|---------------------------|
+| Steps / distance / floors | Yes | Yes | Yes |
+| Heart rate, HRV, SpO2 | No | Yes | Yes |
+| Sleep stages | No | Yes | Yes |
+| Active / resting energy | No | Yes | Yes |
+| Weight, VO2 Max | No | Yes | Yes |
+
+### Option A — iOS Shortcuts (free)
+
+Works with Apple Watch or any source already writing into the Health app.
+
+1. Create a HA **long-lived access token** (Profile → Security).
+2. In Shortcuts, for each metric:
+   - **Find Health Samples** (type = Heart Rate / Steps / Sleep / …)
+   - Sort newest first, limit 1 (or a batch loop for heart rate)
+   - **Get Details of Health Sample** → Value
+   - **Get Contents of URL**  
+     `POST https://<your-ha>/api/states/sensor.health_heart_rate`  
+     Headers: `Authorization: Bearer <token>`, `Content-Type: application/json`  
+     Body: `{"state": <value>, "attributes": {"unit_of_measurement": "bpm", "source": "AppleHealth"}}`
+3. Automate the Shortcut (hourly or every 4 hours). iOS time automations cannot be shorter than 1 hour.
+
+Use stable English entity IDs, for example:
+
+```
+sensor.health_heart_rate
+sensor.health_resting_heart_rate
+sensor.health_steps
+sensor.health_active_energy
+sensor.health_sleep_duration
+sensor.health_deep_sleep
+sensor.health_spo2
+```
+
+HA creates the entity on the first successful POST.
+
+**Tips**
+
+- `state` must be a number, not the words “health sample”.
+- For timestamps, add **Format Date** → ISO 8601 and put it in `attributes.measured_at`.
+- One person = one prefix (`sensor.alex_*`). A second person should use a different prefix.
+
+### Option B — Health Auto Export (paid)
+
+[Health Auto Export](https://apps.apple.com/app/health-auto-export-json-csv/id1115567069) can push many HealthKit types to HA in one automation.
+
+1. HA long-lived token
+2. App → Automation → Home Assistant → your HA URL + token
+3. Select metrics → export
+4. Entities appear as `sensor.<phone_name>_*` (name depends on the device / automation)
+
+Map whatever IDs you get in the card Settings dropdown.
+
+### After sensors exist
+
+Open Health Preview → **Settings**:
+
+| Card key | Typical HA entity |
+|----------|-------------------|
+| `steps` | `sensor.health_steps` |
+| `energy` | `sensor.health_active_energy` |
+| `exercise` | `sensor.health_exercise_time` |
+| `distance` | `sensor.health_distance` |
+| `sleep` | `sensor.health_sleep_duration` |
+| `core` / `deep` / `rem` / `awake` | sleep stage sensors, **minutes** |
+| `hr` / `rhr` / `hrv` | heart rate / resting / HRV |
+| `spo2` | blood oxygen |
+| `weight` / `fat` / `height` / `vo2` | body |
+
+Leave unused keys empty. Sleep values must be **minutes** (438 = 7h 18m), not hours.
+
+Optional YAML seed (Settings overrides this after first save):
 
 ```yaml
 type: custom:health-preview-card
@@ -46,48 +121,38 @@ people:
     name: Me
     color: "#ff5a6a"
     sensors:
-      steps: sensor.my_steps
-      energy: sensor.my_active_energy
-      sleep: sensor.my_sleep_duration
-      hr: sensor.my_heart_rate
+      steps: sensor.health_steps
+      energy: sensor.health_active_energy
+      sleep: sensor.health_sleep_duration
+      hr: sensor.health_heart_rate
 ```
 
-## Sensor keys
-
-| Key | Typical source |
-|-----|----------------|
-| `steps` | Steps |
-| `energy` | Active energy (kcal) |
-| `exercise` | Exercise minutes |
-| `distance` | Walking + running (km) |
-| `flights` | Flights climbed |
-| `water` | Water (mL) |
-| `sleep` | Sleep duration (min) |
-| `core` / `deep` / `rem` / `awake` | Sleep stages (min) |
-| `rest_energy` | Resting energy |
-| `hr` / `rhr` / `hrv` | Heart rate / resting / HRV |
-| `spo2` | Blood oxygen |
-| `resp` | Respiratory rate |
-| `walk_hr` | Walking heart-rate average |
-| `weight` / `fat` / `height` / `vo2` | Body |
-
-Leave unused keys empty.
+---
 
 ## Privacy
 
-This repository contains **no** personal health samples, device IDs, tokens, or household entity names. The card only queries entities you map.
+This repository ships **no** personal health samples, real device IDs, tokens, or household names. Preview images use fictional data. The card only queries entities you map; nothing is sent off your Home Assistant.
 
 ## 中文
 
-Home Assistant Lovelace 卡片：类似 Apple 健康的预览页（活动环、睡眠分段、近 7 日统计）。
+类似 Apple 健康的 Home Assistant Lovelace 卡片（活动环、睡眠分段、近 7 日统计）。一人一个标签，可设主色。卡片内 Settings 绑定传感器。
 
-- 一人一个标签，可设主色
-- 卡片内「Settings」添加人物并绑定传感器，不必先写 YAML
-- 只读你 HA 里已有的实体，无云账号、无埋点、仓库不含任何个人健康数据
+仓库：https://github.com/zomosky/ha-health-preview  
+HACS → 自定义仓库 → **Lovelace**。
 
-HACS → 自定义仓库 → Lovelace → 下载本仓库。仪表盘建议用 **panel** 视图放一张 `custom:health-preview-card`。打开卡片点 Settings 映射 `steps` / `sleep` / `hr` 等即可。
+### Apple 健康怎么进 HA
 
-配置存在当前浏览器，并尽量写入 HA 用户数据（`health_people`），**不会**写进 `configuration.yaml`。
+Companion App **只能**同步步数/距离/楼层，**没有**心率、睡眠、HRV、血氧、卡路里。
+
+要用完整数据，选一条：
+
+1. **快捷指令（免费）**  
+   「查找健康样本」→ 取出数值 → `POST /api/states/sensor.health_heart_rate`（Bearer 长期令牌）。  
+   每个指标一个实体，英文 ID。第二个人换前缀，例如 `sensor.sam_heart_rate`。
+2. **Health Auto Export（付费）**  
+   在 App 里填 HA 地址和令牌，导出后会出现 `sensor.<设备名>_*`，在卡片 Settings 里对上即可。
+
+睡眠请用**分钟**。Settings 里把 `steps` / `sleep` / `hr` 等 key 填成你的实体 ID。
 
 ## License
 

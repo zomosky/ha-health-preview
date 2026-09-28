@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Health Preview — settings demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#0c0b09; color:#f4eee6; font-family:"IBM Plex Sans",sans-serif; }
+  .sheet { min-height:100vh; background:#14110e; max-width:420px; margin:0 0 0 auto; padding:28px 22px 64px; border-left:1px solid rgba(244,238,230,.1); }
+  .head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px; }
+  h1 { font-family:Fraunces,serif; font-size:28px; font-weight:600; }
+  .done { border:0; background:none; color:#8d8478; font:14px inherit; }
+  .card { border-top:1px solid rgba(244,238,230,.1); padding:16px 0 18px; }
+  label { display:block; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#8d8478; margin:10px 0 6px; }
+  input { width:100%; background:#0c0b09; color:#f4eee6; border:1px solid rgba(244,238,230,.12); padding:8px 10px; font:13px inherit; }
+  .swatches { display:flex; gap:8px; }
+  .sw { width:22px; height:22px; border:2px solid transparent; }
+  .sw.on { border-color:#f4eee6; }
+  .row { display:grid; grid-template-columns:92px 1fr; gap:8px; align-items:center; margin-bottom:6px; font-size:12px; color:#8d8478; }
+  .row input { font-size:12px; padding:6px 8px; }
+  .actions { margin-top:18px; }
+  .btn { border:1px solid rgba(244,238,230,.12); background:none; color:#f4eee6; padding:8px 14px; font:13px inherit; }
+  .hint { font-size:12px; color:#8d8478; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="head"><h1>People</h1><span class="done">Done</span></div>
+  <div class="card">
+    <label>Name</label>
+    <input value="Alex"/>
+    <label>Color</label>
+    <div class="swatches">
+      <i class="sw on" style="background:#ff5a6a"></i>
+      <i class="sw" style="background:#6ea8d8"></i>
+      <i class="sw" style="background:#c6f04c"></i>
+      <i class="sw" style="background:#c4a574"></i>
+      <i class="sw" style="background:#5ee0c7"></i>
+    </div>
+    <label>Sensors</label>
+    <div class="row"><span>Steps</span><input value="sensor.iphone_steps"/></div>
+    <div class="row"><span>Active energy</span><input value="sensor.iphone_active_energy"/></div>
+    <div class="row"><span>Sleep</span><input value="sensor.iphone_sleep_duration"/></div>
+    <div class="row"><span>Heart rate</span><input value="sensor.iphone_heart_rate"/></div>
+    <div class="row"><span>HRV</span><input value="sensor.iphone_hrv"/></div>
+    <div class="row"><span>SpO2</span><input value="sensor.iphone_spo2"/></div>
+  </div>
+  <div class="card">
+    <label>Name</label>
+    <input value="Sam"/>
+    <label>Color</label>
+    <div class="swatches">
+      <i class="sw" style="background:#ff5a6a"></i>
+      <i class="sw on" style="background:#6ea8d8"></i>
+      <i class="sw" style="background:#c6f04c"></i>
+    </div>
+    <label>Sensors</label>
+    <div class="row"><span>Steps</span><input value="sensor.watch_steps"/></div>
+    <div class="row"><span>Sleep</span><input value="sensor.watch_sleep"/></div>
+  </div>
+  <div class="actions"><button class="btn">Add person</button></div>
+  <p class="hint">Map each metric to a Home Assistant sensor. Saved on this device and, when possible, on your HA user profile. No data leaves your home.</p>
+</div>
+</body>
+</html>
