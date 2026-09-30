@@ -3,13 +3,13 @@
   const USER_DATA_KEY = "health_people";
   const COLORS = ["#ff5a6a", "#6ea8d8", "#c6f04c", "#c4a574", "#5ee0c7", "#c9a0b0", "#e8a87c"];
   const SENSOR_FIELDS = [
-    ["steps", "Steps"], ["energy", "Active energy"], ["exercise", "Exercise min"],
-    ["distance", "Distance"], ["flights", "Flights"], ["water", "Water"],
-    ["sleep", "Sleep"], ["core", "Core"], ["deep", "Deep"], ["rem", "REM"],
-    ["awake", "Awake"], ["rest_energy", "Resting energy"],
-    ["hr", "Heart rate"], ["rhr", "Resting HR"], ["hrv", "HRV"], ["spo2", "SpO2"],
-    ["resp", "Breathing"], ["walk_hr", "Walking HR"],
-    ["weight", "Weight"], ["fat", "Body fat"], ["vo2", "VO2 Max"], ["height", "Height"],
+    ["steps", "步数"], ["energy", "活动能量"], ["exercise", "锻炼分钟"],
+    ["distance", "步行距离"], ["flights", "爬楼"], ["water", "饮水"],
+    ["sleep", "睡眠时长"], ["core", "核心睡眠"], ["deep", "深睡"], ["rem", "REM"],
+    ["awake", "清醒"], ["rest_energy", "基础代谢"],
+    ["hr", "心率"], ["rhr", "静息心率"], ["hrv", "HRV"], ["spo2", "血氧"],
+    ["resp", "呼吸"], ["walk_hr", "步行心率"],
+    ["weight", "体重"], ["fat", "体脂"], ["vo2", "VO2 Max"], ["height", "身高"],
   ];
   const CUMUL_KEYS = new Set(["steps", "energy", "exercise", "distance", "flights", "water", "rest_energy"]);
   const GOAL = { energy: 400, exercise: 30, steps: 8000, sleep: 450 };
@@ -23,10 +23,10 @@
       padding: 28px 24px 48px; min-height: 70vh;
     }
     .kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #8d8478; }
-    h1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(32px, 5vw, 52px); letter-spacing: -.03em; margin: 8px 0 0; font-weight: 600; }
+    h1 { font-family: Fraunces, Georgia, serif; font-size: clamp(32px, 5vw, 52px); letter-spacing: -.03em; margin: 8px 0 0; font-weight: 600; }
     header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid rgba(244,238,230,.1); }
     .asof { text-align: right; color: #8d8478; font-size: 13px; }
-    .lede { margin: 22px 0 28px; font-family: Georgia, serif; font-size: clamp(16px, 2vw, 22px); color: #d9d0c4; max-width: 46rem; }
+    .lede { margin: 22px 0 28px; font-family: Fraunces, Georgia, serif; font-size: clamp(16px, 2vw, 22px); color: #d9d0c4; max-width: 46rem; }
     .lede em { font-style: italic; color: #f4eee6; }
     .tabs-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 18px 0 8px; }
     .tabs { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
@@ -37,16 +37,16 @@
     .rings { position: relative; width: 220px; height: 220px; margin: 0 auto; }
     .rings svg { width: 100%; height: 100%; transform: rotate(-90deg); }
     .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; pointer-events: none; }
-    .ring-center .num { font-family: Georgia, serif; font-size: 36px; font-weight: 600; }
+    .ring-center .num { font-family: Fraunces, Georgia, serif; font-size: 36px; font-weight: 600; }
     .ring-center .sub { font-size: 11px; color: #8d8478; margin-top: 4px; letter-spacing: .08em; }
     .metric { display: grid; grid-template-columns: 10px 1fr; gap: 8px 12px; margin-bottom: 14px; }
     .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 10px; }
     .metric .label { font-size: 12px; color: #8d8478; }
-    .metric .now { font-family: Georgia, serif; font-size: 30px; font-weight: 600; line-height: 1; }
+    .metric .now { font-family: Fraunces, Georgia, serif; font-size: 30px; font-weight: 600; line-height: 1; }
     .unit { font-size: 13px; color: #8d8478; margin-left: 4px; font-family: inherit; }
     .metric .stat { grid-column: 2; font-size: 12px; color: #8d8478; }
     .sleep { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; padding: 28px 0; border-top: 1px solid rgba(244,238,230,.1); border-bottom: 1px solid rgba(244,238,230,.1); }
-    .sleep-num { font-family: Georgia, serif; font-size: clamp(48px, 7vw, 80px); font-weight: 600; letter-spacing: -.04em; line-height: .9; }
+    .sleep-num { font-family: Fraunces, Georgia, serif; font-size: clamp(48px, 7vw, 80px); font-weight: 600; letter-spacing: -.04em; line-height: .9; }
     .sleep-num span { font-size: .42em; color: #8d8478; margin: 0 4px; }
     h2 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #8d8478; font-weight: 500; margin-bottom: 8px; }
     .stage-bar { display: flex; height: 16px; overflow: hidden; margin: 14px 0 8px; background: #1c1916; }
@@ -64,20 +64,20 @@
     .vitals { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; }
     .vital { padding: 8px 18px 8px 0; border-right: 1px solid rgba(244,238,230,.1); }
     .vital:last-child { border-right: 0; }
-    .vital .now { font-family: Georgia, serif; font-size: 36px; font-weight: 600; margin: 6px 0 4px; }
+    .vital .now { font-family: Fraunces, Georgia, serif; font-size: 36px; font-weight: 600; margin: 6px 0 4px; }
     .vital .now small { font-size: 14px; color: #8d8478; margin-left: 4px; }
     .spark { width: 100%; height: 44px; margin-top: 8px; }
     .bodyrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-    .bodyrow .now { font-family: Georgia, serif; font-size: 30px; font-weight: 600; margin: 6px 0; }
+    .bodyrow .now { font-family: Fraunces, Georgia, serif; font-size: 30px; font-weight: 600; margin: 6px 0; }
     .stale { color: #e0b15a; font-size: 12px; }
-    .empty { display: none; padding: 48px 0; font-family: Georgia, serif; font-size: 20px; color: #8d8478; max-width: 28rem; }
+    .empty { display: none; padding: 48px 0; font-family: Fraunces, Georgia, serif; font-size: 20px; color: #8d8478; max-width: 28rem; }
     .empty.show { display: block; }
     .board.hide { display: none; }
     .sheet { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(8,7,6,.72); }
     .sheet.open { display: block; }
     .sheet-panel { position: absolute; right: 0; top: 0; bottom: 0; width: min(420px, 100%); background: #14110e; overflow: auto; padding: 24px 20px 72px; }
     .sheet-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
-    .sheet-head h3 { font-family: Georgia, serif; font-size: 24px; margin: 0; font-weight: 600; }
+    .sheet-head h3 { font-family: Fraunces, Georgia, serif; font-size: 24px; margin: 0; font-weight: 600; }
     .sheet-head button, .sheet-actions button { border: 1px solid rgba(244,238,230,.12); background: none; color: #f4eee6; padding: 7px 12px; cursor: pointer; font: 13px inherit; }
     .person-card { border-top: 1px solid rgba(244,238,230,.1); padding: 14px 0; }
     .person-card label { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #8d8478; margin: 8px 0 5px; }
@@ -98,12 +98,12 @@
 
   function num(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
   function fmt(n, d = 0) {
-    return n == null ? "—" : n.toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: d });
+    return n == null ? "—" : n.toLocaleString("zh-CN", { maximumFractionDigits: d, minimumFractionDigits: d });
   }
   function hm(min) {
     if (min == null) return { h: 0, m: 0, text: "—" };
     const h = Math.floor(min / 60), m = Math.round(min % 60);
-    return { h, m, text: `${h}h ${m}m` };
+    return { h, m, text: `${h} 小时 ${m} 分` };
   }
   function mean(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null; }
   function delta(now, avg) {
@@ -130,7 +130,7 @@
       this.attachShadow({ mode: "open" });
       this._hass = null;
       this._config = {};
-      this._people = [{ id: "me", name: "Me", color: "#ff5a6a", sensors: {} }];
+      this._people = [{ id: "me", name: "我", color: "#ff5a6a", sensors: {} }];
       this._current = this._people[0];
       this._last = null;
       this._mounted = false;
@@ -162,7 +162,7 @@
     getCardSize() { return 16; }
 
     static getStubConfig() {
-      return { people: [{ id: "me", name: "Me", color: "#ff5a6a", sensors: {} }] };
+      return { people: [{ id: "me", name: "我", color: "#ff5a6a", sensors: {} }] };
     }
 
     disconnectedCallback() {
@@ -187,20 +187,27 @@
     }
 
     _mount() {
+      if (!document.getElementById("hp-fonts")) {
+        const l = document.createElement("link");
+        l.id = "hp-fonts";
+        l.rel = "stylesheet";
+        l.href = "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap";
+        document.head.appendChild(l);
+      }
       const root = this.shadowRoot;
       root.innerHTML = `<style>${CSS}</style>
         <div class="wrap">
           <header>
-            <div><div class="kicker">Health Preview</div><h1 id="titleDate">Today</h1></div>
-            <div class="asof">Live · <b id="asof">—</b></div>
+            <div><div class="kicker">Personal Health · Apple Health</div><h1 id="titleDate">—</h1></div>
+            <div class="asof">实时 · <b id="asof">—</b><br/>来源 Home Assistant · 每 2 分钟刷新</div>
           </header>
           <div class="tabs-row">
             <div class="tabs" id="tabs"></div>
-            <button class="gear" type="button" id="btnSettings">Settings</button>
+            <button class="gear" type="button" id="btnSettings">设置</button>
           </div>
-          <div class="empty" id="empty">No sensors mapped. Open Settings, add a person, and pick entities.</div>
+          <div class="empty" id="empty">还没接入 Apple Health。点右上角「设置」给这个人绑定传感器。</div>
           <div class="board" id="board">
-            <p class="lede" id="lede"></p>
+            <p class="lede" id="lede">正在读取…</p>
             <div class="hero">
               <div class="rings">
                 <svg viewBox="0 0 120 120">
@@ -211,58 +218,59 @@
                   <circle id="rEx" cx="60" cy="60" r="42" fill="none" stroke="#c6f04c" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/>
                   <circle id="rStep" cx="60" cy="60" r="32" fill="none" stroke="#5ee0c7" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/>
                 </svg>
-                <div class="ring-center"><div class="num" id="ringScore">—</div><div class="sub">today</div></div>
+                <div class="ring-center"><div class="num" id="ringScore">—</div><div class="sub">今日完成度</div></div>
               </div>
               <div>
-                <div class="metric"><div class="dot" style="background:var(--accent,#ff5a6a)"></div><div><div class="label">Active energy</div><div class="now" id="energyNow">—</div></div><div class="stat" id="energyStat"></div></div>
-                <div class="metric"><div class="dot" style="background:#c6f04c"></div><div><div class="label">Exercise</div><div class="now" id="exNow">—</div></div><div class="stat" id="exStat"></div></div>
-                <div class="metric"><div class="dot" style="background:#5ee0c7"></div><div><div class="label">Steps</div><div class="now" id="stepNow">—</div></div><div class="stat" id="stepStat"></div></div>
+                <div class="metric"><div class="dot" style="background:var(--accent,#ff5a6a)"></div><div><div class="label">活动能量</div><div class="now" id="energyNow">—</div></div><div class="stat" id="energyStat"></div></div>
+                <div class="metric"><div class="dot" style="background:#c6f04c"></div><div><div class="label">锻炼时间</div><div class="now" id="exNow">—</div></div><div class="stat" id="exStat"></div></div>
+                <div class="metric"><div class="dot" style="background:#5ee0c7"></div><div><div class="label">步数</div><div class="now" id="stepNow">—</div></div><div class="stat" id="stepStat"></div></div>
               </div>
             </div>
             <section class="sleep">
               <div>
-                <h2>Last night</h2>
+                <h2>昨夜睡眠</h2>
                 <div class="sleep-num" id="sleepNum">—</div>
                 <div class="stage-bar" id="stageBar"></div>
                 <div class="stage-keys" id="stageKeys"></div>
                 <p class="caption" id="sleepCap"></p>
               </div>
               <div>
-                <h2>10 nights</h2>
+                <h2>近 10 夜</h2>
                 <div id="nightChart"></div>
+                <p class="caption">柱高为总时长，分段是核心 / 快速眼动 / 深睡</p>
               </div>
             </section>
             <section class="section">
-              <h2>10-day activity</h2>
+              <h2>近 10 日活动</h2>
               <div id="stepBars"></div>
               <p class="caption" id="stepCap"></p>
             </section>
             <section class="section">
-              <h2>Vitals</h2>
+              <h2>生命体征</h2>
               <div class="vitals">
-                <div class="vital"><div class="label">Heart rate</div><div class="now" id="hrNow">—</div><div class="stat" id="hrStat"></div><svg class="spark" id="hrSpark" viewBox="0 0 240 44" preserveAspectRatio="none"></svg></div>
-                <div class="vital"><div class="label">Resting</div><div class="now" id="rhrNow">—</div><div class="stat" id="rhrStat"></div></div>
-                <div class="vital"><div class="label">HRV</div><div class="now" id="hrvNow">—</div><div class="stat" id="hrvStat"></div></div>
-                <div class="vital"><div class="label">SpO2</div><div class="now" id="spoNow">—</div><div class="stat" id="spoStat"></div></div>
+                <div class="vital"><div class="label">心率</div><div class="now" id="hrNow">—</div><div class="stat" id="hrStat"></div><svg class="spark" id="hrSpark" viewBox="0 0 240 44" preserveAspectRatio="none"></svg></div>
+                <div class="vital"><div class="label">静息心率</div><div class="now" id="rhrNow">—</div><div class="stat" id="rhrStat"></div></div>
+                <div class="vital"><div class="label">心率变异</div><div class="now" id="hrvNow">—</div><div class="stat" id="hrvStat"></div></div>
+                <div class="vital"><div class="label">血氧</div><div class="now" id="spoNow">—</div><div class="stat" id="spoStat"></div></div>
               </div>
             </section>
             <section class="section" style="border-bottom:0">
-              <h2>Body</h2>
+              <h2>身体成分</h2>
               <div class="bodyrow">
-                <div><div class="label">Weight</div><div class="now" id="wtNow">—</div><div class="stale" id="wtStat"></div></div>
+                <div><div class="label">体重</div><div class="now" id="wtNow">—</div><div class="stale" id="wtStat"></div></div>
                 <div><div class="label">BMI</div><div class="now" id="bmiNow">—</div><div class="caption" id="bmiStat"></div></div>
-                <div><div class="label">Body fat</div><div class="now" id="fatNow">—</div></div>
-                <div><div class="label">VO2 Max</div><div class="now" id="voNow">—</div></div>
+                <div><div class="label">体脂</div><div class="now" id="fatNow">—</div><div class="caption" id="fatStat"></div></div>
+                <div><div class="label">VO₂ Max</div><div class="now" id="voNow">—</div><div class="caption" id="voStat"></div></div>
               </div>
             </section>
           </div>
         </div>
         <div class="sheet" id="sheet">
           <div class="sheet-panel">
-            <div class="sheet-head"><h3>People</h3><button type="button" id="btnClose">Done</button></div>
+            <div class="sheet-head"><h3>人物设置</h3><button type="button" id="btnClose">完成</button></div>
             <div id="peopleEditor"></div>
-            <div class="sheet-actions"><button type="button" id="btnAdd">Add person</button></div>
-            <p class="hint">Map each metric to a Home Assistant sensor entity. Saved on this device and, when possible, on your HA user profile. No data leaves your home.</p>
+            <div class="sheet-actions"><button type="button" id="btnAdd">添加人物</button></div>
+            <p class="hint">传感器填 HA 实体 ID，可从下拉列表选。配置保存在本机，并尽量同步到当前 HA 账号。数据不离开你家。</p>
           </div>
         </div>
         <datalist id="sensorList"></datalist>`;
@@ -271,7 +279,7 @@
       this._$("btnSettings").onclick = () => { this._renderEditor(); this._$("sheet").classList.add("open"); this._fillSensors(); };
       this._$("btnClose").onclick = () => this._closeSettings();
       this._$("btnAdd").onclick = () => {
-        this._people.push({ id: "p" + Date.now(), name: "New person", color: COLORS[this._people.length % COLORS.length], sensors: {} });
+        this._people.push({ id: "p" + Date.now(), name: "新人", color: COLORS[this._people.length % COLORS.length], sensors: {} });
         this._renderEditor();
       };
       this._$("sheet").addEventListener("click", (e) => { if (e.target.id === "sheet") this._closeSettings(); });
@@ -294,7 +302,7 @@
         const r = await this._ws("frontend/get_user_data", { key: USER_DATA_KEY });
         if (r && r.value && Array.isArray(r.value) && r.value.length) this._people = r.value;
       } catch (_) { /* keep yaml/default */ }
-      if (!this._people.length) this._people = [{ id: "me", name: "Me", color: "#ff5a6a", sensors: {} }];
+      if (!this._people.length) this._people = [{ id: "me", name: "我", color: "#ff5a6a", sensors: {} }];
       this._current = this._people[0];
     }
 
@@ -326,10 +334,10 @@
           `<div class="sensor-row"><span>${lab}</span><input list="sensorList" data-i="${i}" data-k="${k}" value="${(p.sensors && p.sensors[k]) || ""}" placeholder="sensor.xxx"></div>`
         ).join("");
         return `<div class="person-card">
-          <label>Name</label><input type="text" data-i="${i}" data-f="name" value="${p.name || ""}">
-          <label>Color</label><div class="swatches">${sw}</div>
-          <label>Sensors</label>${rows}
-          ${this._people.length > 1 ? `<div class="sheet-actions"><button type="button" class="btn-del" data-del="${i}">Remove</button></div>` : ""}
+          <label>名字</label><input type="text" data-i="${i}" data-f="name" value="${p.name || ""}">
+          <label>主色</label><div class="swatches">${sw}</div>
+          <label>传感器</label>${rows}
+          ${this._people.length > 1 ? `<div class="sheet-actions"><button type="button" class="btn-del" data-del="${i}">移除</button></div>` : ""}
         </div>`;
       }).join("");
       box.querySelectorAll("input[data-f=name]").forEach((inp) => { inp.oninput = () => { this._people[+inp.dataset.i].name = inp.value; }; });
@@ -379,7 +387,7 @@
         this._last = data;
         this._render(data);
       } catch (e) {
-        this._$("lede").textContent = "Could not load history.";
+        this._$("lede").textContent = "无法读取历史数据。";
       }
     }
 
@@ -441,15 +449,20 @@
       const wt = val("weight"), fat = val("fat"), height = val("height"), vo = val("vo2");
       const water = val("water"), restE = val("rest_energy");
 
+      const parts = String(today).split("-");
+      const m = Number(parts[1]), d = Number(parts[2]);
       const dt = new Date(`${today}T12:00:00`);
-      this._$("titleDate").textContent = dt.toLocaleDateString(undefined, { month: "short", day: "numeric", weekday: "short" });
-      this._$("asof").textContent = new Date(data.generated_at).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+      const week = "日一二三四五六"[dt.getDay()];
+      this._$("titleDate").textContent = `${m}月${d}日  周${week}`;
+      this._$("asof").textContent = new Date(data.generated_at).toLocaleString("zh-CN", { hour: "2-digit", minute: "2-digit" });
 
       const s7 = lastN(daily, this._sid("steps"), 7, true, today);
       const e7 = lastN(daily, this._sid("energy"), 7, true, today);
       const x7 = lastN(daily, this._sid("exercise"), 7, true, today);
       const sl7 = lastN(daily, this._sid("sleep"), 7, true, today);
+      const dp7 = lastN(daily, this._sid("deep"), 7, true, today);
       const avgS = mean(s7.map((r) => r.last)), avgE = mean(e7.map((r) => r.last)), avgX = mean(x7.map((r) => r.last)), avgSl = mean(sl7.map((r) => r.last));
+      const avgDeep = mean(dp7.map((r) => r.last));
 
       const pMove = energy != null ? (energy / GOAL.energy) * 100 : 0;
       const pEx = ex != null ? (ex / GOAL.exercise) * 100 : 0;
@@ -459,19 +472,21 @@
       ring(this._$("rMove"), pMove); ring(this._$("rEx"), pEx); ring(this._$("rStep"), pStep);
       this._$("ringScore").textContent = `${score}%`;
       this._$("energyNow").innerHTML = `${fmt(energy, 0)}<span class="unit">kcal</span>`;
-      this._$("exNow").innerHTML = `${fmt(ex, 0)}<span class="unit">min</span>`;
-      this._$("stepNow").innerHTML = `${fmt(steps, 0)}<span class="unit"></span>`;
-      this._$("energyStat").textContent = `goal ${GOAL.energy} · 7d avg ${fmt(avgE, 0)}`;
-      this._$("exStat").textContent = `goal ${GOAL.exercise} · 7d avg ${fmt(avgX, 0)}`;
-      this._$("stepStat").textContent = `goal ${GOAL.steps} · 7d avg ${fmt(avgS, 0)}${dist != null ? ` · ${fmt(dist, 2)} km` : ""}`;
+      this._$("exNow").innerHTML = `${fmt(ex, 0)}<span class="unit">分钟</span>`;
+      this._$("stepNow").innerHTML = `${fmt(steps, 0)}<span class="unit">步</span>`;
+      this._$("energyStat").innerHTML = `目标 ${GOAL.energy} · 近7日日均 <b>${fmt(avgE, 0)}</b> · 今日 ${Math.round(pMove)}%`;
+      this._$("exStat").innerHTML = `目标 ${GOAL.exercise} 分钟 · 近7日日均 <b>${fmt(avgX, 0)}</b> 分钟`;
+      this._$("stepStat").innerHTML = `目标 ${GOAL.steps} · 近7日日均 <b>${fmt(avgS, 0)}</b>${dist != null ? ` · 距离 ${fmt(dist, 2)} km` : ""}`;
 
       const sl = hm(sleep);
-      this._$("sleepNum").innerHTML = `${sl.h}<span>h</span>${sl.m}<span>m</span>`;
-      const stages = [{ k: "Core", v: core, c: "#4d6d8a" }, { k: "REM", v: rem, c: "#8fb4c9" }, { k: "Deep", v: deep, c: "#c4a574" }, { k: "Awake", v: awake, c: "#5a534c" }];
+      this._$("sleepNum").innerHTML = `${sl.h}<span>小时</span>${sl.m}<span>分</span>`;
+      const stages = [{ k: "核心", v: core, c: "#4d6d8a" }, { k: "REM", v: rem, c: "#8fb4c9" }, { k: "深睡", v: deep, c: "#c4a574" }, { k: "清醒", v: awake, c: "#5a534c" }];
       const sum = stages.reduce((a, s) => a + (s.v || 0), 0) || 1;
       this._$("stageBar").innerHTML = stages.map((s) => `<i style="width:${((s.v || 0) / sum) * 100}%;background:${s.c}"></i>`).join("");
-      this._$("stageKeys").innerHTML = stages.map((s) => `<span><i style="background:${s.c}"></i>${s.k} ${s.v || 0}m</span>`).join("");
-      this._$("sleepCap").textContent = `7-night avg ${hm(avgSl).text}`;
+      this._$("stageKeys").innerHTML = stages.map((s) => `<span><i style="background:${s.c}"></i>${s.k} ${s.v || 0} 分</span>`).join("");
+      const slDelta = sleep && avgSl ? (sleep - avgSl) : 0;
+      const slTxt = slDelta >= 0 ? `比近7夜多 ${Math.round(slDelta)} 分钟` : `比近7夜少 ${Math.round(-slDelta)} 分钟`;
+      this._$("sleepCap").textContent = `近7夜日均 ${hm(avgSl).text} · 深睡 ${deep == null ? "—" : deep} 分（7日均 ${fmt(avgDeep, 0)}）· ${slTxt}`;
 
       const nights = lastN(daily, this._sid("sleep"), 10, false, today);
       const nmax = Math.max(...nights.map((r) => r.last || 1), 1);
@@ -492,40 +507,52 @@
         `<div class="col"><div class="bar${r.d === today ? " today" : ""}" style="height:${Math.max(2, (r.last / smax) * 110)}px"></div><div class="xl">${Number(String(r.d).slice(8))}</div></div>`
       ).join("")}</div>`;
       const best = stepRows.reduce((a, b) => (b.last > (a.last || 0) ? b : a), stepRows[0] || { d: "", last: 0 });
-      this._$("stepCap").textContent = best.d ? `peak ${best.d.slice(5)} · ${fmt(best.last, 0)} steps${water != null ? ` · water ${fmt(water, 0)}` : ""}${restE != null ? ` · rest ${fmt(restE, 0)} kcal` : ""}` : "";
+      this._$("stepCap").textContent = best.d ? `最高 ${best.d.slice(5)} · ${fmt(best.last, 0)} 步${water != null ? ` · 饮水 ${fmt(water, 0)} mL` : ""}${restE != null ? ` · 基础代谢 ${fmt(restE, 0)} kcal` : ""}` : "";
 
       this._$("hrNow").innerHTML = `${fmt(hr, 0)}<small>bpm</small>`;
       const hrDay = (daily[this._sid("hr")] || {})[today];
-      this._$("hrStat").textContent = hrDay ? `today ${fmt(hrDay.min, 0)}–${fmt(hrDay.max, 0)}` : "";
+      this._$("hrStat").textContent = hrDay ? `今日 ${fmt(hrDay.min, 0)}–${fmt(hrDay.max, 0)}` : "";
       const spark = ((data.hist && data.hist[this._sid("hr")]) || []).slice(-180);
       this._spark(this._$("hrSpark"), spark, this._current.color);
       const rhr7 = lastN(daily, this._sid("rhr"), 7, true, today);
       const hrv7 = lastN(daily, this._sid("hrv"), 7, true, today);
       const spo7 = lastN(daily, this._sid("spo2"), 7, true, today);
       this._$("rhrNow").innerHTML = `${fmt(rhr, 0)}<small>bpm</small>`;
-      this._$("rhrStat").textContent = `7d ${fmt(mean(rhr7.map((r) => r.last)), 0)} ${delta(rhr, mean(rhr7.map((r) => r.last)))}`;
+      this._$("rhrStat").textContent = `7日均 ${fmt(mean(rhr7.map((r) => r.last)), 0)} ${delta(rhr, mean(rhr7.map((r) => r.last)))}`;
       this._$("hrvNow").innerHTML = `${fmt(hrv, 1)}<small>ms</small>`;
-      this._$("hrvStat").textContent = `7d ${fmt(mean(hrv7.map((r) => r.mean ?? r.last)), 0)}`;
+      this._$("hrvStat").textContent = `7日均 ${fmt(mean(hrv7.map((r) => r.mean ?? r.last)), 0)}`;
       this._$("spoNow").innerHTML = `${fmt(spo, 0)}<small>%</small>`;
-      this._$("spoStat").textContent = `7d ${fmt(mean(spo7.map((r) => r.mean ?? r.last)), 1)}`;
+      this._$("spoStat").textContent = `7日均 ${fmt(mean(spo7.map((r) => r.mean ?? r.last)), 1)}`;
 
-      this._$("wtNow").textContent = wt == null ? "—" : `${fmt(wt, 1)}`;
+      this._$("wtNow").textContent = wt == null ? "—" : `${fmt(wt, 1)} kg`;
       const wtS = st[this._sid("weight")];
       if (wtS && wtS.last_updated) {
         const days = Math.round((Date.now() - new Date(wtS.last_updated).getTime()) / 86400000);
-        this._$("wtStat").textContent = days > 1 ? `${days}d ago` : "";
+        this._$("wtStat").textContent = days <= 1 ? "今天更新" : `${days} 天未更新`;
       } else this._$("wtStat").textContent = "";
       const bmi = wt && height ? wt / Math.pow(height / 100, 2) : null;
       this._$("bmiNow").textContent = fmt(bmi, 1);
-      this._$("bmiStat").textContent = bmi == null ? "" : (bmi < 18.5 ? "low" : bmi < 24 ? "ok" : bmi < 28 ? "high" : "obese");
+      this._$("bmiStat").textContent = bmi == null ? "" : (bmi < 18.5 ? "偏瘦" : bmi < 24 ? "正常范围" : bmi < 28 ? "超重" : "肥胖");
       this._$("fatNow").textContent = fat == null ? "—" : `${fmt(fat, 0)}%`;
+      if (this._$("fatStat")) this._$("fatStat").textContent = fat == null ? "" : (fat < 20 ? "偏低" : fat <= 25 ? "中等" : "偏高");
       this._$("voNow").textContent = fmt(vo, 1);
+      if (this._$("voStat")) this._$("voStat").textContent = vo == null ? "" : (vo >= 42 ? "良好" : vo >= 35 ? "一般" : "偏低");
 
+      const sleepGood = sleep != null && sleep >= 420;
+      const deepLow = deep != null && deep < 50;
+      const activeLow = avgS && steps != null && steps < avgS * 0.45;
+      const avgHrv = mean(hrv7.map((r) => r.mean ?? r.last));
       let lede = "";
-      if (sleep != null && sleep >= 420) lede = `Last night <em>${sl.text}</em>.`;
-      else if (sleep != null) lede = `Last night ${sl.text}.`;
-      if (avgS && steps != null && steps < avgS * 0.45) lede += " Activity is below the 7-day average.";
-      this._$("lede").innerHTML = lede || "Live from Home Assistant.";
+      if (sleep == null) lede = "来自 Home Assistant 的实时数据。";
+      else if (sleepGood && deepLow) lede = `昨夜睡了 <em>${sl.text}</em>，时长够，深睡只有 ${deep} 分钟，略薄。`;
+      else if (sleepGood) lede = `昨夜 <em>${sl.text}</em>，睡得完整。`;
+      else lede = `昨夜 ${sl.text}，比近一周短。`;
+      if (sleep != null) {
+        if (activeLow) lede += " 今天步数和活动能量都明显低于近7日均值，还在爬坡。";
+        else lede += ` 活动环完成 ${score}%。`;
+        if (hrv && avgHrv && hrv > avgHrv * 1.1) lede += " HRV 高于近7日，恢复不错。";
+      }
+      this._$("lede").innerHTML = lede;
     }
 
     _spark(el, pts, color) {
@@ -547,7 +574,7 @@
     window.customCards.push({
       type: CARD_TAG,
       name: "Health Preview",
-      description: "Editorial health dashboard with per-person tabs",
+      description: "中文健康预览：活动环、睡眠、近7日统计、多人标签",
       preview: false,
     });
   }
